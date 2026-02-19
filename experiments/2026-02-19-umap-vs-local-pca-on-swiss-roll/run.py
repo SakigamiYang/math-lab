@@ -84,14 +84,32 @@ def local_pca_spectrum(X: np.ndarray, k: int, max_dim: int, rng: np.random.Gener
 
 def spectral_gap_dim(avg_spectrum: np.ndarray) -> dict:
     """
-    Return spectral gaps and a heuristic intrinsic dimension:
-    argmax gap in log-spectrum differences.
+    Same log-gap heuristic, but makes it robust to zero-padding.
+
+    We only compute gaps on the 'effective' prefix where eigenvalue ratios are > 0
+    (or > tol), so padded zeros do not create an artificial huge gap.
     """
     eps = 1e-12
-    logv = np.log(avg_spectrum + eps)
+    tol = 1e-10  # anything below is treated as padding / numerical zero
+
+    # effective length: last index where spectrum > tol
+    positive = np.where(avg_spectrum > tol)[0]
+    if len(positive) < 2:
+        # not enough info to define a gap
+        return {"gaps": [], "d_hat": 0, "effective_dim": len(positive)}
+
+    L = int(positive[-1] + 1)  # use avg_spectrum[:L]
+    spec = avg_spectrum[:L]
+
+    logv = np.log(spec + eps)
     gaps = logv[:-1] - logv[1:]
-    d_hat = int(np.argmax(gaps) + 1)  # gap after d_hat-th component
-    return {"gaps": gaps.tolist(), "d_hat": d_hat}
+    d_hat = int(np.argmax(gaps) + 1)
+
+    return {
+        "gaps": gaps.tolist(),
+        "d_hat": d_hat,
+        "effective_dim": L,
+    }
 
 
 def save_fig_scatter_2d(path: Path, Y: np.ndarray, color: np.ndarray, title: str) -> None:
