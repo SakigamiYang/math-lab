@@ -86,6 +86,8 @@ uv run python run.py
 
 ## Notes
 
+The intrinsic dimension estimate was sensitive to zero-padding; we compute gaps only over the effective non-zero spectrum.
+
 Potential extensions:
 
 - Study how intrinsic dimension estimate varies with neighborhood size.
