@@ -8,6 +8,7 @@ from time import perf_counter
 import numpy as np
 import pandas as pd
 import umap
+from mathlab.numerics import spectral_gap_dim_ignore_padding
 from mathlab.repro import env_info_dict
 from sklearn.datasets import make_swiss_roll
 from sklearn.decomposition import PCA
@@ -82,36 +83,6 @@ def local_pca_spectrum(X: np.ndarray, k: int, max_dim: int, rng: np.random.Gener
     return np.mean(np.stack(spectra, axis=0), axis=0)
 
 
-def spectral_gap_dim(avg_spectrum: np.ndarray) -> dict:
-    """
-    Same log-gap heuristic, but makes it robust to zero-padding.
-
-    We only compute gaps on the 'effective' prefix where eigenvalue ratios are > 0
-    (or > tol), so padded zeros do not create an artificial huge gap.
-    """
-    eps = 1e-12
-    tol = 1e-10  # anything below is treated as padding / numerical zero
-
-    # effective length: last index where spectrum > tol
-    positive = np.where(avg_spectrum > tol)[0]
-    if len(positive) < 2:
-        # not enough info to define a gap
-        return {"gaps": [], "d_hat": 0, "effective_dim": len(positive)}
-
-    L = int(positive[-1] + 1)  # use avg_spectrum[:L]
-    spec = avg_spectrum[:L]
-
-    logv = np.log(spec + eps)
-    gaps = logv[:-1] - logv[1:]
-    d_hat = int(np.argmax(gaps) + 1)
-
-    return {
-        "gaps": gaps.tolist(),
-        "d_hat": d_hat,
-        "effective_dim": L,
-    }
-
-
 def save_fig_scatter_2d(path: Path, Y: np.ndarray, color: np.ndarray, title: str) -> None:
     import matplotlib.pyplot as plt
 
@@ -142,7 +113,7 @@ def main() -> None:
 
     # 2) local PCA spectrum + intrinsic dim heuristic
     avg_spec = local_pca_spectrum(X, k=cfg.k_neighbors, max_dim=cfg.pca_max_dim, rng=rng)
-    gap_info = spectral_gap_dim(avg_spec)
+    gap_info = spectral_gap_dim_ignore_padding(avg_spec)
 
     # save spectrum table
     df_spec = pd.DataFrame(
