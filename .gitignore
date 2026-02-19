@@ -1,0 +1,33 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.dist/
+.build/
+.venv/
+
+# Tooling caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Experiments: never commit raw data or artifacts
+experiments/**/data/**
+!experiments/**/data/README.md
+
+experiments/**/artifacts/**
+!experiments/**/artifacts/.gitkeep
+
+# Logs
+*.log

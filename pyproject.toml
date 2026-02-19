@@ -1,0 +1,40 @@
+[project]
+name = "math-lab"
+version = "0.1.0"
+description = "A single-repo laboratory for reproducible math experiments."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mathlab",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "packages/mathlab",
+]
+
+[tool.uv.sources]
+mathlab = { workspace = true, editable = true }
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+fix = true
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages/mathlab/tests"]
+addopts = "-q"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.1",
+]
