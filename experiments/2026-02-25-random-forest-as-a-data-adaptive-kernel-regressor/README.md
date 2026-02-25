@@ -113,7 +113,7 @@ uv run python run.py
 Numerical reconstruction accuracy:
 
 - `max_abs_err = 1.990e-13`
-- `mean_abs_err = 2.496e-14`
+- `mean_abs_err = 2.614e-14`
 - `max_row_sum_err = 2.220e-16`
 
 ### Interpretation
