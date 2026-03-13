@@ -8,7 +8,7 @@ from time import perf_counter
 import numpy as np
 import pandas as pd
 import umap
-from mathlab.numerics import spectral_gap_dim_ignore_padding
+from mathlab.numerics import eigengap_dimension_ignore_padding
 from mathlab.repro import env_info_dict
 from sklearn.datasets import make_swiss_roll
 from sklearn.decomposition import PCA
@@ -113,7 +113,7 @@ def main() -> None:
 
     # 2) local PCA spectrum + intrinsic dim heuristic
     avg_spec = local_pca_spectrum(X, k=cfg.k_neighbors, max_dim=cfg.pca_max_dim, rng=rng)
-    gap_info = spectral_gap_dim_ignore_padding(avg_spec)
+    gap_info = eigengap_dimension_ignore_padding(avg_spec)
 
     # save spectrum table
     df_spec = pd.DataFrame(

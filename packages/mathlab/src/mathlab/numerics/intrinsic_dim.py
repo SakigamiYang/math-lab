@@ -3,7 +3,15 @@ from __future__ import annotations
 import numpy as np
 
 
-def spectral_gap_dim_ignore_padding(
+def markov_spectral_gap(transition: np.ndarray) -> float:
+    eigvals = np.linalg.eigvals(transition)
+    abs_sorted = np.sort(np.abs(eigvals))[::-1]
+    if len(abs_sorted) < 2:
+        return 0.0
+    return float(1.0 - abs_sorted[1].real)
+
+
+def eigengap_dimension_ignore_padding(
     avg_spectrum: np.ndarray,
     *,
     tol: float = 1e-10,

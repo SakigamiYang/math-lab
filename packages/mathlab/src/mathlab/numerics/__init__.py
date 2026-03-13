@@ -1,5 +1,9 @@
-from .intrinsic_dim import spectral_gap_dim_ignore_padding
+from .intrinsic_dim import (
+    eigengap_dimension_ignore_padding,
+    markov_spectral_gap,
+)
 
 __all__ = [
-    "spectral_gap_dim_ignore_padding",
+    "eigengap_dimension_ignore_padding",
+    "markov_spectral_gap",
 ]
